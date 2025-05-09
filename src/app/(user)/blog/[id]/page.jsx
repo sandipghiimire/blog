@@ -4,6 +4,7 @@ import Contactus from "@/app/components/Contactus";
 import Footer from "@/app/components/Footer";
 import Header from "@/app/components/Header";
 import { Edit3Icon, MessageCircle, Share, ThumbsUpIcon, Trash2Icon } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react";
 
@@ -56,7 +57,7 @@ export default function Page() {
             console.log("Blog Deleted Successfully!!", data)
         } catch (error) {
             console.log(error)
-            
+
         }
     }
 
@@ -65,7 +66,17 @@ export default function Page() {
         <div className="flex flex-col xl:flex-row">
             <div className="md:p-10 p-5 h-full">
                 <div>
-                    <div className="h-[350px] p-20 flex justify-center items-center bg-slate-100">Image</div>
+                    <div className="h-[350px] flex justify-center items-center bg-slate-100">
+                        {data?.image ? (
+                            <img
+                                src={data?.image}
+                                alt={data?.title}
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <span className="text-gray-500">Image placeholder</span>
+                        )}
+                    </div>
                 </div>
                 <div className="flex flex-col gap-5 mt-20">
                     <div>
@@ -73,7 +84,9 @@ export default function Page() {
                             <h1 className="texxt-white text-2xl font-semibold">{data?.title}</h1>
                             {user?.isAdmin ? (
                                 <div className="flex flex-row gap-3 text-green-800">
-                                    <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded"><Edit3Icon size={18} /></button>
+                                    <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded">
+                                        <Link href={`/blogform/${data?._id}`}><Edit3Icon size={18} /></Link>
+                                    </button>
                                     <button onClick={() => handelDelete(blog?._id)} className="ring-2 ring-green-800 px-2 hover:bg-red-600 hover:ring-0 hover:text-white py-1 rounded"><Trash2Icon /></button>
                                 </div>
                             ) : null}

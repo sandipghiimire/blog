@@ -11,9 +11,13 @@ const blogSchema = new mongoose.Schema(
             required: true
         },
         category: {
-            type: mongoose.Schema.Types.ObjectId, 
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Categories"
-        }       
+        },
+        image: {
+            type: String,
+            required: true,
+        }
     },
     { timestamps: true }
 )

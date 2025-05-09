@@ -29,7 +29,6 @@ export async function PUT(req, { params }) {
 
     const { title, blog, category } = await req.json();
 
-    // Check if the blog exists
     const blogContent = await Blog.findById(id);
     if (!blogContent) {
       return NextResponse.json({ message: "Blog not found!" }, { status: 404 });
@@ -38,7 +37,7 @@ export async function PUT(req, { params }) {
     // Update the blog
     blogContent.title = title || blogContent.title;
     blogContent.blog = blog || blogContent.blog;
-    blogContent.author = category || blogContent.category;
+    blogContent.category = category || blogContent.category;
 
     await blogContent.save();
 
