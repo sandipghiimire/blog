@@ -40,7 +40,7 @@ export default function Page() {
 
         fetchData();
     }, [])
-    
+
     const handelDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
         if (!confirmDelete) return;
@@ -56,6 +56,7 @@ export default function Page() {
             console.log("Blog Deleted Successfully!!", data)
         } catch (error) {
             console.log(error)
+            
         }
     }
 
