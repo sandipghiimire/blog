@@ -6,21 +6,25 @@ export async function POST(req) {
     try {
         const connect = await connectionDB();
         if (!connect) {
-            return NextResponse.json({ message: "databse x!" })
-        }
-        const { title, blog, category } = await req.json();
-        if (!title || !blog || !category) {
-            return NextResponse.json({ message: "All fields are required!" })
+            return NextResponse.json({ message: "Database not connected!" });
         }
 
-        const data = await Blog.create({ title, blog, category });
+        const { title, blog, category, image } = await req.json();
 
-        return NextResponse.json({ message: "Successfully created!!" })
+        if (!title || !blog || !category || !image) {
+            return NextResponse.json({ message: "All fields including image are required!" });
+        }
+
+        const data = await Blog.create({ title, blog, category, image });
+
+        return NextResponse.json({ message: "Successfully created!!", data });
 
     } catch (error) {
-        return NextResponse.json({ message: "Error while creatig the data!" })
+        console.error("Error creating blog:", error);
+        return NextResponse.json({ message: "Error while creating the data!" });
     }
 }
+
 
 
 export async function GET() {

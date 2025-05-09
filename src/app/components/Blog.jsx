@@ -108,7 +108,9 @@ export default function Blogpost() {
                                     <h1><Share2 /></h1>
                                     {user?.isAdmin ? (
                                         <div className="flex flex-row gap-3 text-green-800">
-                                            <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded"><Edit3Icon size={18} /></button>
+                                            <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded">
+                                                <Link href={`/blogform/${blog?._id}`}><Edit3Icon size={18} /></Link>
+                                            </button>
                                             <button onClick={() => handelDelete(blog?._id)} className="ring-2 ring-green-800 px-2 hover:bg-red-600 hover:ring-0 hover:text-white py-1 rounded"><Trash2Icon /></button>
                                         </div>
                                     ) : null}

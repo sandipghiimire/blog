@@ -10,7 +10,7 @@ export default function Page() {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const res = await fetch("/api/blog");
+                const res = await fetch("/api/contact");
                 const data = await res.json();
                 console.log(data);
                 setBlog(data.data);
@@ -31,22 +31,21 @@ export default function Page() {
         </div>
         <table className="w-full text-left mt-5">
             <thead>
-                <tr className="grid grid-cols-3 font-bold bg-gray-300">
-                    <th>Title</th>
-                    <th>Blog</th>
+                <tr className="grid grid-cols-4 font-bold bg-gray-300">
+                    <th>Email</th>
+                    <th>Number</th>
+                    <th>Message</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {blog?.map((item, i) => (
-                    <tr key={i} className="grid grid-cols-3 border-b border-gray-400 py-2">
-                        <td>{item.title}</td>
-                        <td className="line-clamp-2">{item.blog}</td>
+                    <tr key={i} className="grid grid-cols-4 border-b border-gray-400 py-2">
+                        <td>{item.email}</td>
+                        <td className="line-clamp-2">{item.number}</td>
+                        <td className="line-clamp-2">{item.message}</td>
                         <td>
                             <div className="flex gap-3">
-                                <button className="bg-blue-600 px-3 py-2 rounded-lg text-white">
-                                    <Link href={`/blogform/${item?._id}`}><Edit2 /></Link>
-                                </button>
                                 <button className="bg-red-600 px-3 py-2 rounded-lg text-white"><Trash2 /></button>
                             </div>
                         </td>

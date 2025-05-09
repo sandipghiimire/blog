@@ -1,41 +1,67 @@
 "use client"
-import QuillEditor from "@/app/components/QuillEditor";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+
+
 
 export default function Page() {
 
     const [category, setCategory] = useState("");
+    const [image, setImage] = useState("");
     const [blog, setBlog] = useState("");
     const [selectcata, setSelectcata] = useState([]);
     const [title, setTitle] = useState("");
 
     const handelSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
-            const res = await fetch("/api/blog", {
+    try {
+        let imageUrl = "";
+
+        if (image) {
+            const formData = new FormData();
+            formData.append("file", image); // from file input
+
+            // Use Next.js environment variables with NEXT_PUBLIC_ prefix
+            formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    title,
-                    blog,
-                    category: category
-                })
-
+                body: formData
             });
 
-            if (!res.ok) {
-                throw new Error('Failed to create blog');
-            }
             const data = await res.json();
-            console.log('Blog created successfully:', data);
-        } catch (error) {
-            console.log("Error while creating blog:", error);
+            imageUrl = data.secure_url;
         }
+
+        // Now send all blog data including image
+        const res = await fetch("/api/blog", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title,
+                blog,
+                category,
+                image: imageUrl
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to create blog');
+        }
+
+        const result = await res.json();
+        console.log('Blog created successfully:', result);
+
+    } catch (error) {
+        console.log("Error while creating blog:", error);
     }
+};
+
+
 
 
     useEffect(() => {
@@ -53,6 +79,17 @@ export default function Page() {
         fetchCategory();
     }, [])
 
+    const [preview, setPreview] = useState(null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setPreview(imageUrl);
+        }
+    };
+
     return <main className="h-full w-full bg-slate-200 p-10 text-black">
         <form onSubmit={handelSubmit}>
             <div className="flex flex-row justify-between pb-5">
@@ -60,6 +97,20 @@ export default function Page() {
                 <Link href={'/blogform/listview'}><h1 className="bg-gray-300 px-3 py-1 rounded-lg">View Blogs</h1></Link>
             </div>
             <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
+                    <h1>Image</h1>
+                    <input
+                        onChange={handleImageChange}
+                        className="bg-gray-200 px-3 py-2 outline-none ring-2 ring-gray-300"
+                        type="file"
+                        accept="image/*"
+                    />
+
+                    {preview && (
+                        <img src={preview} alt="Preview" className="w-64 h-auto rounded-lg shadow" />
+                    )}
+                </div>
+
                 <div className="flex flex-col gap-3">
                     <h1>Title of The Blog!</h1>
                     <input
