@@ -1,5 +1,6 @@
 "use client"
 import QuillEditor from "@/app/components/QuillEditor";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -54,8 +55,9 @@ export default function Page() {
 
     return <main className="h-full w-full bg-slate-200 p-10 text-black">
         <form onSubmit={handelSubmit}>
-            <div>
+            <div className="flex flex-row justify-between pb-5">
                 <h1>Add your blog</h1>
+                <Link href={'/blogform/listview'}><h1 className="bg-gray-300 px-3 py-1 rounded-lg">View Blogs</h1></Link>
             </div>
             <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-3">

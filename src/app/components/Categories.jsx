@@ -10,7 +10,7 @@ export default function Category() {
                 const res = await fetch('/api/category')
                 const data = await res.json();
                 setCategory(data.data);
-                console.log(data.data)
+                // console.log(data.data)
             } catch (error) {
                 console.log(error)
             }

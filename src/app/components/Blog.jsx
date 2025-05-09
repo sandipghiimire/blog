@@ -1,5 +1,6 @@
 "use client"
-import { ChevronLeft, ChevronRight, MessageCircleMore, Share2, ThumbsUp } from "lucide-react";
+import { ChevronLeft, ChevronRight, Edit3Icon, MessageCircleMore, Share2, ThumbsUp, Trash2Icon } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Blogpost() {
@@ -26,27 +27,61 @@ export default function Blogpost() {
     const goToNextPage = () => {
         setCurrentPage((prev) => Math.min(totalPages, prev + 1));
     };
-    
-        useEffect(() => {
-            const fetchBlog = async () => {
-                try {
-                    const res = await fetch('/api/blog')
-                    const data = await res.json();
-                    setBlog(data.data);
-                } catch (error) {
-                    console.log(error)
-                }
+
+    useEffect(() => {
+        const fetchBlog = async () => {
+            try {
+                const res = await fetch('/api/blog')
+                const data = await res.json();
+                setBlog(data.data);
+            } catch (error) {
+                console.log(error)
             }
-    
-            fetchBlog();
-        }, [])
+        }
+
+        fetchBlog();
+    }, [])
+
+    const [user, setUser] = useState("");
+
+    useEffect(() => {
+        const fetchLoggedinUser = async () => {
+            try {
+                const res = await fetch('/api/me')
+                const data = await res.json();
+                setUser(data.data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchLoggedinUser();
+    }, [])
+
+    const handelDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`/api/blog/${id}`, {
+                method: "DELETE"
+            })
+            const data = await res.json();
+            if (!res.ok) {
+                console.log("Dont get the blog!")
+            }
+            console.log("Blog Deleted Successfully!!", data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return <main>
         <div className="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 ">
-        {/* <div className="flex-1 flex-col"> */}
+            {/* <div className="flex-1 flex-col"> */}
             {currentblogs?.map((blog, index) => {
                 return (
-                    <div>
+                    <div key={index}>
                         <div className="grid 2xl:grid-cols-2 grid-cols-1 pt-15 justify-center items-center md:justify-start md:items-start">
                             <div className="min-h-[350px] w-full md:w-[350px] bg-green-100 flex justify-center items-center">
                                 {blog.image ? (
@@ -60,15 +95,23 @@ export default function Blogpost() {
                                 )}
                             </div>
                             <div className="pt-10">
-                                <h1 className="text-xl font-bold">{blog?.title}</h1>
+                                <h1 className="text-xl font-bold">
+                                    <Link href={`/blog/${blog?._id}`}>{blog?.title}</Link>
+                                </h1>
                                 <h1 className="text-sm font-extralight text-gray-600">
                                     Created {new Date(blog?.createdAt).toLocaleDateString()}
                                 </h1>
                                 <h1 className="pt-5 w-full md:w-[350px] line-clamp-6">{blog?.blog}</h1>
-                                <div className="flex flex-row gap-3 pt-5">
+                                <div className="flex flex-row gap-3 pt-5 justify-start items-center">
                                     <h1><MessageCircleMore /></h1>
                                     <h1><ThumbsUp /></h1>
                                     <h1><Share2 /></h1>
+                                    {user?.isAdmin ? (
+                                        <div className="flex flex-row gap-3 text-green-800">
+                                            <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded"><Edit3Icon size={18} /></button>
+                                            <button onClick={() => handelDelete(blog?._id)} className="ring-2 ring-green-800 px-2 hover:bg-red-600 hover:ring-0 hover:text-white py-1 rounded"><Trash2Icon /></button>
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
                         </div>

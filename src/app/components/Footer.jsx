@@ -1,6 +1,6 @@
 export default function Footer() {
     return <main className="bg-green-700">
-        <div className="flex flex-row justify-between px-20 py-5 border-b">
+        <div className="flex flex-col gap-5 md:gap-0 md:flex-row justify-between px-5 md:px-20 py-5 border-b">
             <div className="flex flex-col gap-3">
                 <h1 className="text-xl font-semibold">Blog Technology Pvt. Ltd.</h1>
                 <div className="pl-5 gap-3 flex flex-col">
