@@ -113,12 +113,12 @@ export default function Page() {
                                                 <Edit3Icon size={18} />
                                             </Link>
                                         </button>
-                                        <button
+                                        {user?.isAdmin && (<button
                                             onClick={handelDelete}
                                             className="ring-2 ring-green-800 px-2 hover:bg-red-600 hover:ring-0 hover:text-white py-1 rounded"
                                         >
                                             <Trash2Icon />
-                                        </button>
+                                        </button>)}
                                     </div>
                                 )}
                             </div>

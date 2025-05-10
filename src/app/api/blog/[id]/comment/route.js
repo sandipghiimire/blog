@@ -4,8 +4,8 @@ import Blog from "@/lib/models/blog/blogSchema";
 export async function POST(req, { params }) {
   await connectionDB();
 
-  const { cid } = await params; 
-  console.log("The idd is ", cid);   
+  const { id } = await params; 
+  console.log("The idd is ", id);   
   const body = await req.json(); 
   const { userId, comment } = body;
 
@@ -13,7 +13,7 @@ export async function POST(req, { params }) {
     return new Response(JSON.stringify({ error: "Missing data" }), { status: 400 });
   }
 
-  const blog = await Blog.findById(cid);
+  const blog = await Blog.findById(id);
   if (!blog) {
     return new Response(JSON.stringify({ error: "Blog not found" }), { status: 404 });
   }
