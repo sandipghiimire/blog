@@ -34,7 +34,6 @@ export async function PUT(req, { params }) {
       return NextResponse.json({ message: "Blog not found!" }, { status: 404 });
     }
 
-    // Update the blog
     blogContent.title = title || blogContent.title;
     blogContent.blog = blog || blogContent.blog;
     blogContent.category = category || blogContent.category;
@@ -55,8 +54,9 @@ export async function GET(req, { params }) {
 
     const { id } = await params;
 
-    const blog = await Blog.findById(id);
-
+    const blog = await Blog.findById(id)
+    .populate("comments.userId", "name email")
+    .exec(); 
     if (!blog) {
       return NextResponse.json({ message: "Blog not found" }, { status: 404 });
     }
