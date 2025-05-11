@@ -3,6 +3,7 @@ import { LogOutIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Header() {
     const router = useRouter();
@@ -10,7 +11,10 @@ export default function Header() {
     const [user, setUser] = useState("");
 
     useEffect(() => {
-        const fetchLoggedinUser = async () => {
+        fetchLoggedinUser();
+    }, [])
+
+    const fetchLoggedinUser = async () => {
             try {
                 const res = await fetch('/api/me')
                 const data = await res.json();
@@ -20,12 +24,15 @@ export default function Header() {
             }
         }
 
-        fetchLoggedinUser();
-    }, [])
-
 
     const handleLogout = async () => {
-        await fetch("/api/logout");
+        try {
+            await fetch("/api/logout");
+            toast.success("Logged Out Successfully!")
+            await fetchLoggedinUser();
+        } catch (error) {
+            console.log(error)
+        }
         router.push("/login");
     };
 
