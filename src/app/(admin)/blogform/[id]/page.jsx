@@ -11,8 +11,8 @@ export default function Page() {
     const [message, setMessage] = useState('');
     const router = useRouter();
     const [selectcata, setSelectcata] = useState([]);
-    const [image, setImage] = useState(null);  // New state for image
-    const [preview, setPreview] = useState(null);  // Preview for selected image
+    const [image, setImage] = useState(null);  
+    const [preview, setPreview] = useState(null);  
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -29,7 +29,6 @@ export default function Page() {
     }, [])
 
     useEffect(() => {
-        // Fetch existing blog data when the component mounts
         const fetchBlog = async () => {
             const response = await fetch(`/api/blog/${id}`);
             const data = await response.json();
@@ -37,7 +36,7 @@ export default function Page() {
                 setTitle(data.blog.title);
                 setCategory(data.blog.category);
                 setBlog(data.blog.blog);
-                setPreview(data.blog.image); // Set image preview if it exists
+                setPreview(data.blog.image); 
             } else {
                 setMessage(data.message || 'Failed to fetch blog');
             }
@@ -49,7 +48,6 @@ export default function Page() {
         const file = e.target.files[0];
         setImage(file);
 
-        // Set preview for the selected image
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreview(reader.result);
@@ -62,12 +60,11 @@ export default function Page() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let imageUrl = preview; // If image isn't updated, use the existing one
+        let imageUrl = preview;
 
         if (image) {
-            // If a new image is selected, upload it to Cloudinary
             const formData = new FormData();
-            formData.append("file", image); // from file input
+            formData.append("file", image); 
             formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
 
             const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
@@ -76,10 +73,9 @@ export default function Page() {
             });
 
             const data = await res.json();
-            imageUrl = data.secure_url;  // Get the image URL after upload
+            imageUrl = data.secure_url;  
         }
 
-        // Now send all blog data including the updated image
         const response = await fetch(`/api/blog/${id}`, {
             method: 'PUT',
             headers: {
@@ -92,6 +88,7 @@ export default function Page() {
 
         if (response.ok) {
             setMessage('Blog updated successfully!');
+            router.push(`/blog/${id}`)
         } else {
             setMessage(data.message || 'Failed to update blog');
         }
@@ -114,7 +111,6 @@ export default function Page() {
                             accept="image/*"
                         />
                         
-                        {/* Preview image if available */}
                         {preview && <img src={preview} alt="Preview" className="w-64 h-auto rounded-lg shadow mt-2" />}
                     </div>
                     

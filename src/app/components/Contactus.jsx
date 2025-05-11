@@ -64,7 +64,7 @@ export default function Contactus() {
                             <input
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                readOnly={isLoggedIn} // Prevent user from editing if logged in
+                                readOnly={isLoggedIn} 
                                 className={`rounded-full ring-1 ring-green-400 px-4 py-2 bg-green-200 outline-none ${isLoggedIn ? "opacity-80 cursor-not-allowed" : ""}`}
                                 type="email"
                                 placeholder="Enter your email"

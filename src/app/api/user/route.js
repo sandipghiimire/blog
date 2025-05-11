@@ -35,24 +35,20 @@ export async function GET(req) {
     try {
         await connectionDB();
 
-        // available token get gareko
         const token = req.cookies.get("token").value || "";
 
         if (!token) {
             return NextResponse.json({ message: "Unauthorized: No token" }, { status: 401 });
         }
 
-        //verifying the token and JWTSecret bata .env
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Admin ho ki nai check garne
         if (!decoded.isAdmin) {
             return NextResponse.json({ message: "Forbidden: Admins only" }, { status: 403 });
         }
 
         const users = await User.find().select("-password");
         
-        // const blogs = await User.find();
 
         return NextResponse.json({ message: "Users fetched!", data: users }, { status: 200 });
     } catch (error) {

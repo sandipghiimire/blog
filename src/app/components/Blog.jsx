@@ -16,7 +16,7 @@ export default function Blogpost() {
 
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
-        setCurrentPage(1); // Reset to first page when changing items per page
+        setCurrentPage(1); 
     };
 
     const goToPreviousPage = () => {
@@ -67,7 +67,7 @@ export default function Blogpost() {
             });
             const data = await res.json();
             if (res.ok) {
-                setBlogs(blogs.filter((blog) => blog._id !== id)); // Remove blog from UI
+                setBlogs(blogs.filter((blog) => blog._id !== id)); 
             } else {
                 console.log("Couldn't delete the blog!");
             }

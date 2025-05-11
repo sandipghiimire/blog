@@ -8,7 +8,6 @@ export async function DELETE(req, { params }) {
     await connectionDB();
     const { id, commentId } = await params;
 
-    // Validate input
     if (!id || !commentId) {
       return NextResponse.json(
         { message: "Missing blog ID or comment ID" },
@@ -16,10 +15,8 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    // Convert string ID to ObjectId
     const commentObjectId = new mongoose.Types.ObjectId(commentId);
 
-    // Update document using $pull operator
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
       { $pull: { comments: { _id: commentObjectId } } },
