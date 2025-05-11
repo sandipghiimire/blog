@@ -5,6 +5,8 @@ import { useState } from "react"
 export default function page() {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [number, setNumber] = useState("");
+    const [name, setName] = useState("");
 
     const handelSubmit = async (e) => {
         e.preventDefault();
@@ -14,7 +16,7 @@ export default function page() {
                 headers: {
                     "Content-type": "application/json"
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, name, number, password })
             })
             if (!res.ok) {
                 console.log("Error validation!!")
@@ -33,13 +35,23 @@ export default function page() {
                     <div>
                         <h1 className="text-xl text-black font-semibold">Login Page</h1>
                     </div>
-                    <div className="text-black bg-white py-5 px-8 flex flex-col gap-3">
+                    <div className="text-black bg-white py-5 px-8 flex flex-col gap-3  w-[350px] rounded-lg">
+                        <div>
+                            <h1>Name</h1>
+                            <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Enter your Name"
+                                type="text"
+                                className="px-3 py-2 outline-none ring-2 ring-gray-300 bg-gray-200 rounded-lg w-full"
+                            />
+                        </div>
                         <div>
                             <h1>Email</h1>
                             <input
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your Name"
+                                placeholder="Enter your Email"
                                 type="email"
                                 className="px-3 py-2 outline-none ring-2 ring-gray-300 bg-gray-200 rounded-lg w-full"
                             />
@@ -47,10 +59,10 @@ export default function page() {
                         <div>
                             <h1>Phone</h1>
                             <input
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your Name"
-                                type="email"
+                                value={number}
+                                onChange={(e) => setNumber(e.target.value)}
+                                placeholder="Enter your Number"
+                                type="number"
                                 className="px-3 py-2 outline-none ring-2 ring-gray-300 bg-gray-200 rounded-lg w-full"
                             />
                         </div>
@@ -59,7 +71,7 @@ export default function page() {
                             <input
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your Name"
+                                placeholder="Enter Password"
                                 type="password"
                                 className="px-3 py-2 outline-none ring-2 ring-gray-300 bg-gray-200 rounded-lg w-full"
                             />
