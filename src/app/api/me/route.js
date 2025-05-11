@@ -16,10 +16,8 @@ export async function GET(req) {
         }
 
 
-        // Fetch the user data
         const data = await User.findOne({ _id: userId }).select("-password");
 
-        // Return the data
         return NextResponse.json({ message: "The data is!", data });
 
     } catch (error) {

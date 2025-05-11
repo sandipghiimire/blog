@@ -23,16 +23,15 @@ const blogSchema = new mongoose.Schema(
         likes: {
             count: {
                 type: Number,
-                default: 0, // Initialize like count as 0
+                default: 0, 
             },
             users: {
-                type: [mongoose.Schema.Types.ObjectId], // Store userId of users who liked the post
+                type: [mongoose.Schema.Types.ObjectId], 
                 ref: "User",
-                default: [], // Ensure users array is always initialized as an empty array
+                default: [], 
             },
         },
 
-        // Multiple users can comment
         comments: [
             {
                 userId: {

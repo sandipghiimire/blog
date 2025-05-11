@@ -1,11 +1,14 @@
 "use client"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 
 
 export default function Page() {
+
+    const route = useRouter();
 
     const [category, setCategory] = useState("");
     const [image, setImage] = useState("");
@@ -14,52 +17,51 @@ export default function Page() {
     const [title, setTitle] = useState("");
 
     const handelSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        let imageUrl = "";
+        try {
+            let imageUrl = "";
 
-        if (image) {
-            const formData = new FormData();
-            formData.append("file", image); // from file input
+            if (image) {
+                const formData = new FormData();
+                formData.append("file", image); 
 
-            // Use Next.js environment variables with NEXT_PUBLIC_ prefix
-            formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+                formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
 
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await res.json();
+                imageUrl = data.secure_url;
+            }
+
+            const res = await fetch("/api/blog", {
                 method: "POST",
-                body: formData
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    blog,
+                    category,
+                    image: imageUrl
+                })
             });
 
-            const data = await res.json();
-            imageUrl = data.secure_url;
+            if (!res.ok) {
+                throw new Error('Failed to create blog');
+            }
+
+            const result = await res.json();
+            console.log('Blog created successfully:', result);
+            route.push('/blogform/listview')
+
+        } catch (error) {
+            console.log("Error while creating blog:", error);
         }
-
-        // Now send all blog data including image
-        const res = await fetch("/api/blog", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                title,
-                blog,
-                category,
-                image: imageUrl
-            })
-        });
-
-        if (!res.ok) {
-            throw new Error('Failed to create blog');
-        }
-
-        const result = await res.json();
-        console.log('Blog created successfully:', result);
-
-    } catch (error) {
-        console.log("Error while creating blog:", error);
-    }
-};
+    };
 
 
 
@@ -100,6 +102,7 @@ export default function Page() {
                 <div className="flex flex-col gap-3">
                     <h1>Image</h1>
                     <input
+                        required
                         onChange={handleImageChange}
                         className="bg-gray-200 px-3 py-2 outline-none ring-2 ring-gray-300"
                         type="file"
@@ -114,6 +117,7 @@ export default function Page() {
                 <div className="flex flex-col gap-3">
                     <h1>Title of The Blog!</h1>
                     <input
+                        required
                         type="text"
                         value={title}
                         onChange={((e) => setTitle(e.target.value))}
@@ -124,6 +128,7 @@ export default function Page() {
                 <div className="flex flex-col gap-3">
                     <h1>Brand <span className="text-red-600">*</span></h1>
                     <select
+                        required
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         className="px-3 py-2 bg-gray-200 outline-none ring-2 ring-gray-300"
@@ -140,6 +145,7 @@ export default function Page() {
                 <div className="flex flex-col gap-3">
                     <h1>Description</h1>
                     <textarea
+                        required
                         type="text"
                         value={blog}
                         onChange={((e) => setBlog(e.target.value))}

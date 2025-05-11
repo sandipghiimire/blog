@@ -16,7 +16,7 @@ export default function Page() {
     const blogId = segments[segments.length - 1];
 
     const [data, setData] = useState("");
-    const [comment, setComment] = useState([]);
+    const [comments, setComments] = useState([]);
     const [user, setUser] = useState("");
 
     useEffect(() => {
@@ -33,14 +33,19 @@ export default function Page() {
         fetchLoggedinUser();
     }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
+
+    const fetchData = async () => {
+        try {
             const res = await fetch(`/api/blog/${blogId}`);
             const data = await res.json();
-            setData(data.blog);
-            setComment(data.blog.comments);
-        };
+            setData(data.blog); 
+            setComments(data.blog.comments); 
+        } catch (error) {
+            console.error("Error fetching blog data:", error);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, [blogId]);
 
@@ -56,6 +61,7 @@ export default function Page() {
             if (!res.ok) {
                 console.log("Didn't get the blog!");
             }
+            await fetchData();
             console.log("Blog Deleted Successfully!!", data);
         } catch (error) {
             console.log(error);
@@ -64,7 +70,7 @@ export default function Page() {
 
     const deleteComment = async (commentId) => {
         try {
-            console.log("Deleting comment with ID:", commentId); // Log the commentId
+            console.log("Deleting comment with ID:", commentId);
 
             const response = await fetch(`/api/blog/${blogId}/comment/${commentId}`, {
                 method: "DELETE",
@@ -76,8 +82,7 @@ export default function Page() {
                 console.error("Failed to delete comment:", data.message);
                 throw new Error("Failed to delete comment");
             }
-
-            // You can add additional logic here to remove the comment from the UI, for example.
+            await fetchData();
             console.log("Comment deleted successfully");
         } catch (error) {
             console.error("Error deleting comment:", error);
@@ -113,12 +118,12 @@ export default function Page() {
                                                 <Edit3Icon size={18} />
                                             </Link>
                                         </button>
-                                        {user?.isAdmin && (<button
+                                        <button
                                             onClick={handelDelete}
                                             className="ring-2 ring-green-800 px-2 hover:bg-red-600 hover:ring-0 hover:text-white py-1 rounded"
                                         >
                                             <Trash2Icon />
-                                        </button>)}
+                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -142,9 +147,13 @@ export default function Page() {
                             <Share />
                         </div>
                     </div>
-                    <CommentBox blogId={data?._id} userId={user?._id} />
+                    <CommentBox
+                        blogId={data?._id}
+                        userId={user?._id}
+                        onCommentSubmitted={fetchData}
+                    />
                     <div className="flex flex-col gap-8 mt-5">
-                        {comment?.map((comments, index) => {
+                        {comments?.map((comments, index) => {
                             return (
                                 <div key={index} className="flex items-start gap-4 p-4 border-b border-gray-200">
                                     <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold">
@@ -157,7 +166,9 @@ export default function Page() {
                                                 <div className="text-lg font-semibold text-gray-800">{comments?.userId?.name}</div>
                                                 <div className="text-sm text-gray-500">{comments?.userId?.email}</div>
                                             </div>
-                                            <button onClick={() => deleteComment(comments?._id)}><Trash2Icon /></button>
+                                            {user?.isAdmin && (
+                                                <button onClick={() => deleteComment(comments?._id)}><Trash2Icon /></button>
+                                            )}
                                         </div>
 
                                         <div className="px-4 py-2 bg-gray-100 rounded-lg text-gray-700">
