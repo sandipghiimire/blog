@@ -56,7 +56,7 @@ export default function Page() {
 
             const result = await res.json();
             console.log('Blog created successfully:', result);
-            route.push('/blogform/listview')
+            route.push('/admin/blogform/listview')
 
         } catch (error) {
             console.log("Error while creating blog:", error);
@@ -96,7 +96,7 @@ export default function Page() {
         <form onSubmit={handelSubmit}>
             <div className="flex flex-row justify-between pb-5">
                 <h1>Add your blog</h1>
-                <Link href={'/blogform/listview'}><h1 className="bg-gray-300 px-3 py-1 rounded-lg">View Blogs</h1></Link>
+                <Link href={'/admin/blogform/listview'}><h1 className="bg-gray-300 px-3 py-1 rounded-lg">View Blogs</h1></Link>
             </div>
             <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-3">
