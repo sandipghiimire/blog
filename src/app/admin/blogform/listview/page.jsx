@@ -25,8 +25,8 @@ export default function Page() {
         <div className="flex flex-row justify-between">
             <h1 className="text-xl font-semibold">List view of Blog</h1>
             <div className="flex flex-row gap-3">
-                <h1 className="bg-slate-300 px-3 py-1 rounded-lg"><Link href={'/blogform'}>Create Blog</Link></h1>
-                <h1 className="bg-slate-300 px-3 py-1 rounded-lg"><Link href={'/contact'}>Contact Messages</Link></h1>
+                <h1 className="bg-slate-300 px-3 py-1 rounded-lg"><Link href={'/admin/blogform'}>Create Blog</Link></h1>
+                <h1 className="bg-slate-300 px-3 py-1 rounded-lg"><Link href={'/admin/contact'}>Contact Messages</Link></h1>
             </div>
         </div>
         <table className="w-full text-left mt-5">
@@ -45,7 +45,7 @@ export default function Page() {
                         <td>
                             <div className="flex gap-3">
                                 <button className="bg-blue-600 px-3 py-2 rounded-lg text-white">
-                                    <Link href={`/blogform/${item?._id}`}><Edit2 /></Link>
+                                    <Link href={`/admin/blogform/${item?._id}`}><Edit2 /></Link>
                                 </button>
                                 <button className="bg-red-600 px-3 py-2 rounded-lg text-white"><Trash2 /></button>
                             </div>
