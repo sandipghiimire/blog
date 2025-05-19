@@ -28,7 +28,7 @@ export default function CommentBox({ blogId, userId, onCommentSubmitted }) {
 
                 setUserCommentsCount(userCommentCount);
             } catch (error) {
-                console.error("Error fetching comments count:", error.message || error);
+                console.log("Error fetching comments count:", error.message || error);
             }
         };
 
@@ -61,7 +61,7 @@ export default function CommentBox({ blogId, userId, onCommentSubmitted }) {
 
             await onCommentSubmitted();
         } catch (error) {
-            console.error("Error submitting comment:", error);
+            console.log("Error submitting comment:", error);
         } finally {
             setIsSubmitting(false);
         }
