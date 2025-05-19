@@ -9,15 +9,18 @@ import { Edit3Icon, MessageCircle, Share, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Page() {
     const pathname = usePathname();
     const segments = pathname.split("/");
     const blogId = segments[segments.length - 1];
 
-    const [data, setData] = useState("");
+    const [data, setData] = useState(null);
     const [comments, setComments] = useState([]);
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchLoggedinUser = async () => {
@@ -33,15 +36,17 @@ export default function Page() {
         fetchLoggedinUser();
     }, []);
 
-
     const fetchData = async () => {
+        setLoading(true);
         try {
             const res = await fetch(`/api/blog/${blogId}`);
             const data = await res.json();
-            setData(data.blog); 
-            setComments(data.blog.comments); 
+            setData(data.blog);
+            setComments(data.blog.comments);
         } catch (error) {
             console.error("Error fetching blog data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,8 +75,6 @@ export default function Page() {
 
     const deleteComment = async (commentId) => {
         try {
-            console.log("Deleting comment with ID:", commentId);
-
             const response = await fetch(`/api/blog/${blogId}/comment/${commentId}`, {
                 method: "DELETE",
             });
@@ -89,15 +92,15 @@ export default function Page() {
         }
     };
 
-
-
     return (
         <main className="bg-gray-200 text-black">
             <Header />
             <div className="flex flex-col xl:flex-row">
-                <div className="md:p-10 p-5 h-full">
+                <div className="md:p-10 p-5 h-full w-full">
                     <div className="h-[350px] flex justify-center items-center bg-slate-100">
-                        {data?.image ? (
+                        {loading ? (
+                            <Skeleton height={350} width="100%" />
+                        ) : data?.image ? (
                             <img
                                 src={data?.image}
                                 alt={data?.title}
@@ -107,11 +110,14 @@ export default function Page() {
                             <span className="text-gray-500">Image placeholder</span>
                         )}
                     </div>
+
                     <div className="flex flex-col gap-5 mt-20">
                         <div>
                             <div className="flex flex-row justify-between">
-                                <h1 className="text-black text-2xl font-semibold">{data?.title}</h1>
-                                {user?.isAdmin && (
+                                <h1 className="text-black text-2xl font-semibold">
+                                    {loading ? <Skeleton width={250} /> : data?.title}
+                                </h1>
+                                {user?.isAdmin && !loading && (
                                     <div className="flex flex-row gap-3 text-green-800">
                                         <button className="ring-2 ring-green-800 px-2 hover:bg-green-800 hover:ring-0 hover:text-white py-1 rounded">
                                             <Link href={`/blogform/${data?._id}`}>
@@ -128,65 +134,78 @@ export default function Page() {
                                 )}
                             </div>
                             <h1 className="text-sm font-extralight text-gray-600">
-                                Created {new Date(data?.createdAt).toLocaleDateString()}
+                                {loading
+                                    ? <Skeleton width={100} />
+                                    : `Created ${new Date(data?.createdAt).toLocaleDateString()}`}
                             </h1>
                         </div>
-                        <h1 className="text-black">{data?.blog}</h1>
-                    </div>
-                    <div className="flex flex-col gap-5 mt-5">
-                        <div className="flex flex-row gap-3">
-                            {user && (
-                                <LikeButton
-                                    blogId={data._id}
-                                    userId={user._id}
-                                    initialLikes={data.likes?.count || 0}
-                                    isLiked={data.likes?.users?.includes(user._id)}
-                                />
-                            )}
-                            <MessageCircle />
-                            <Share />
+
+                        <div className="text-black">
+                            {loading ? <Skeleton count={5} /> : data?.blog}
                         </div>
                     </div>
-                    <CommentBox
-                        blogId={data?._id}
-                        userId={user?._id}
-                        onCommentSubmitted={fetchData}
-                    />
+
+                    <div className="flex flex-row gap-3 mt-5">
+                        {user && !loading && (
+                            <LikeButton
+                                blogId={data._id}
+                                userId={user._id}
+                                initialLikes={data.likes?.count || 0}
+                                isLiked={data.likes?.users?.includes(user._id)}
+                            />
+                        )}
+                        <MessageCircle />
+                        <Share />
+                    </div>
+
+                    {!loading && user && (
+                        <CommentBox
+                            blogId={data?._id}
+                            userId={user?._id}
+                            onCommentSubmitted={fetchData}
+                        />
+                    )}
+
                     <div className="flex flex-col gap-8 mt-5">
-                        {comments?.map((comments, index) => {
-                            return (
+                        {loading ? (
+                            [...Array(3)].map((_, index) => (
+                                <div key={index} className="p-4 border-b border-gray-200">
+                                    <Skeleton height={60} />
+                                </div>
+                            ))
+                        ) : (
+                            comments?.map((comment, index) => (
                                 <div key={index} className="flex items-start gap-4 p-4 border-b border-gray-200">
                                     <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold">
-                                        {comments?.userId?.name?.charAt(0)}
+                                        {comment?.userId?.name?.charAt(0)}
                                     </div>
-
                                     <div className="flex flex-col gap-2 w-full">
                                         <div className="flex flex-row justify-between">
                                             <div className="flex flex-col">
-                                                <div className="text-lg font-semibold text-gray-800">{comments?.userId?.name}</div>
-                                                <div className="text-sm text-gray-500">{comments?.userId?.email}</div>
+                                                <div className="text-lg font-semibold text-gray-800">{comment?.userId?.name}</div>
+                                                <div className="text-sm text-gray-500">{comment?.userId?.email}</div>
                                             </div>
                                             {user?.isAdmin && (
-                                                <button onClick={() => deleteComment(comments?._id)}><Trash2Icon /></button>
+                                                <button onClick={() => deleteComment(comment?._id)}>
+                                                    <Trash2Icon />
+                                                </button>
                                             )}
                                         </div>
-
                                         <div className="px-4 py-2 bg-gray-100 rounded-lg text-gray-700">
-                                            {comments?.comment}
+                                            {comment?.comment}
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            ))
+                        )}
                     </div>
                 </div>
+
                 <div>
-                    <div>
-                        <div className="hidden md:block">
-                            <Category />
-                        </div>
-                        <Contactus />
+                    <div className="hidden md:block">
+                        <Category />
                     </div>
+                    <Contactus />
                 </div>
             </div>
             <div className="text-white">

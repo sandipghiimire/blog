@@ -60,12 +60,12 @@ export default function Contactus() {
 
                     <div className="grid sm:grid-row-2 grid-row-1 gap-10 pb-5">
                         <div className="grid grid-row-2 gap-2">
-                            <h1 className="text-green-800">Email</h1>
+                            <h1 className="text-slate-800">Email</h1>
                             <input
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 readOnly={isLoggedIn} 
-                                className={`rounded-full ring-1 ring-green-400 px-4 py-2 bg-green-200 outline-none ${isLoggedIn ? "opacity-80 cursor-not-allowed" : ""}`}
+                                className={`rounded-full ring-1 ring-slate-400 px-4 py-2 bg-slate-200 outline-none ${isLoggedIn ? "opacity-80 cursor-not-allowed" : ""}`}
                                 type="email"
                                 placeholder="Enter your email"
                                 required
@@ -73,11 +73,11 @@ export default function Contactus() {
                         </div>
 
                         <div className="grid grid-row-2 gap-2">
-                            <h1 className="text-green-800">Contact No.</h1>
+                            <h1 className="text-slate-800">Contact No.</h1>
                             <input
                                 value={number}
                                 onChange={(e) => setNumber(e.target.value)}
-                                className="rounded-full ring-1 ring-gray-400 px-4 py-2 bg-green-200 outline-none"
+                                className="rounded-full ring-1 ring-gray-400 px-4 py-2 bg-slate-200 outline-none"
                                 type="number"
                                 placeholder="Enter your contact number"
                                 required
@@ -86,17 +86,17 @@ export default function Contactus() {
                     </div>
 
                     <div className="grid grid-row-2 gap-2">
-                        <h1 className="text-green-800">Message Box</h1>
+                        <h1 className="text-slate-800">Message Box</h1>
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="rounded-lg ring-1 ring-gray-400 px-4 py-2 bg-green-200 outline-none"
+                            className="rounded-lg ring-1 ring-gray-400 px-4 py-2 bg-slate-200 outline-none"
                             placeholder="Write your message..."
                             required
                         />
                     </div>
 
-                    <button className="bg-green-800 text-white px-3 py-2 rounded-full mt-10">Submit</button>
+                    <button className="bg-slate-800 text-white px-3 py-2 rounded-full mt-10">Submit</button>
                 </div>
             </form>
         </main>
